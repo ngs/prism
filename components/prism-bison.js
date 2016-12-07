@@ -1,39 +1,56 @@
-Prism.languages.bison = Prism.languages.extend('c', {});
+(function () {
+	function register(Prism) {
+		if (typeof Prism === 'object') {
+			Prism.languages.bison = Prism.languages.extend('c', {});
 
-Prism.languages.insertBefore('bison', 'comment', {
-	'bison': {
-		// This should match all the beginning of the file
-		// including the prologue(s), the bison declarations and
-		// the grammar rules.
-		pattern: /^[\s\S]*?%%[\s\S]*?%%/,
-		inside: {
-			'c': {
-				// Allow for one level of nested braces
-				pattern: /%\{[\s\S]*?%\}|\{(?:\{[^}]*\}|[^{}])*\}/,
-				inside: {
-					'delimiter': {
-						pattern: /^%?\{|%?\}$/,
-						alias: 'punctuation'
-					},
-					'bison-variable': {
-						pattern: /[$@](?:<[^\s>]+>)?[\w$]+/,
-						alias: 'variable',
-						inside: {
-							'punctuation': /<|>/
-						}
-					},
-					rest: Prism.languages.c
+			Prism.languages.insertBefore('bison', 'comment', {
+				'bison': {
+					// This should match all the beginning of the file
+					// including the prologue(s), the bison declarations and
+					// the grammar rules.
+					pattern: /^[\s\S]*?%%[\s\S]*?%%/,
+					inside: {
+						'c': {
+							// Allow for one level of nested braces
+							pattern: /%\{[\s\S]*?%\}|\{(?:\{[^}]*\}|[^{}])*\}/,
+							inside: {
+								'delimiter': {
+									pattern: /^%?\{|%?\}$/,
+									alias: 'punctuation'
+								},
+								'bison-variable': {
+									pattern: /[$@](?:<[^\s>]+>)?[\w$]+/,
+									alias: 'variable',
+									inside: {
+										'punctuation': /<|>/
+									}
+								},
+								rest: Prism.languages.c
+							}
+						},
+						'comment': Prism.languages.c.comment,
+						'string': Prism.languages.c.string,
+						'property': /\S+(?=:)/,
+						'keyword': /%\w+/,
+						'number': {
+							pattern: /(^|[^@])\b(?:0x[\da-f]+|\d+)/i,
+							lookbehind: true
+						},
+						'punctuation': /%[%?]|[|:;\[\]<>]/
+					}
 				}
-			},
-			'comment': Prism.languages.c.comment,
-			'string': Prism.languages.c.string,
-			'property': /\S+(?=:)/,
-			'keyword': /%\w+/,
-			'number': {
-				pattern: /(^|[^@])\b(?:0x[\da-f]+|\d+)/i,
-				lookbehind: true
-			},
-			'punctuation': /%[%?]|[|:;\[\]<>]/
+			});
 		}
 	}
-});
+	register(this.Prism);
+
+	if (typeof define === 'function' && define.amd) {
+		// AMD
+		define([], function () {
+			return register;
+		});
+	} else if (typeof module === 'object' && typeof module.exports === 'object') {
+		// CommonJS/Browserify
+		module.exports = register;
+	}
+}).call(undefined);

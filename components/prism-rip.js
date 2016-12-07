@@ -1,28 +1,46 @@
-Prism.languages.rip = {
-	'comment': /#.*/,
+(function () {
+	function register(Prism) {
+		if (typeof Prism === 'object') {
+			Prism.languages.rip = {
+				'comment': /#.*/,
 
-	'keyword': /(?:=>|->)|\b(?:class|if|else|switch|case|return|exit|try|catch|finally|raise)\b/,
+				'keyword': /(?:=>|->)|\b(?:class|if|else|switch|case|return|exit|try|catch|finally|raise)\b/,
 
-	'builtin': /@|\bSystem\b/,
+				'builtin': /@|\bSystem\b/,
 
-	'boolean': /\b(?:true|false)\b/,
+				'boolean': /\b(?:true|false)\b/,
 
-	'date': /\b\d{4}-\d{2}-\d{2}\b/,
-	'time': /\b\d{2}:\d{2}:\d{2}\b/,
-	'datetime': /\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\b/,
+				'date': /\b\d{4}-\d{2}-\d{2}\b/,
+				'time': /\b\d{2}:\d{2}:\d{2}\b/,
+				'datetime': /\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\b/,
 
-	'character': /\B`[^\s`'",.:;#\/\\()<>\[\]{}]\b/,
+				'character': /\B`[^\s`'",.:;#\/\\()<>\[\]{}]\b/,
 
-	'regex': {
-		pattern: /(^|[^/])\/(?!\/)(\[.+?]|\\.|[^/\\\r\n])+\/(?=\s*($|[\r\n,.;})]))/,
-		lookbehind: true
-	},
+				'regex': {
+					pattern: /(^|[^/])\/(?!\/)(\[.+?]|\\.|[^/\\\r\n])+\/(?=\s*($|[\r\n,.;})]))/,
+					lookbehind: true
+				},
 
-	'symbol': /:[^\d\s`'",.:;#\/\\()<>\[\]{}][^\s`'",.:;#\/\\()<>\[\]{}]*/,
-	'string': /("|')(\\?.)*?\1/,
-	'number': /[+-]?(?:(?:\d+\.\d+)|(?:\d+))/,
+				'symbol': /:[^\d\s`'",.:;#\/\\()<>\[\]{}][^\s`'",.:;#\/\\()<>\[\]{}]*/,
+				'string': /("|')(\\?.)*?\1/,
+				'number': /[+-]?(?:(?:\d+\.\d+)|(?:\d+))/,
 
-	'punctuation': /(?:\.{2,3})|[`,.:;=\/\\()<>\[\]{}]/,
+				'punctuation': /(?:\.{2,3})|[`,.:;=\/\\()<>\[\]{}]/,
 
-	'reference': /[^\d\s`'",.:;#\/\\()<>\[\]{}][^\s`'",.:;#\/\\()<>\[\]{}]*/
-};
+				'reference': /[^\d\s`'",.:;#\/\\()<>\[\]{}][^\s`'",.:;#\/\\()<>\[\]{}]*/
+			};
+
+		}
+	}
+	register(this.Prism);
+
+	if (typeof define === 'function' && define.amd) {
+		// AMD
+		define([], function () {
+			return register;
+		});
+	} else if (typeof module === 'object' && typeof module.exports === 'object') {
+		// CommonJS/Browserify
+		module.exports = register;
+	}
+}).call(undefined);

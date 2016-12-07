@@ -1,33 +1,50 @@
-Prism.languages.autoit = {
-	"comment": [
-		/;.*/,
-		{
-			// The multi-line comments delimiters can actually be commented out with ";"
-			pattern: /(^\s*)#(?:comments-start|cs)[\s\S]*?^\s*#(?:comments-end|ce)/m,
-			lookbehind: true
+(function () {
+	function register(Prism) {
+		if (typeof Prism === 'object') {
+			Prism.languages.autoit = {
+				"comment": [
+					/;.*/,
+					{
+						// The multi-line comments delimiters can actually be commented out with ";"
+						pattern: /(^\s*)#(?:comments-start|cs)[\s\S]*?^\s*#(?:comments-end|ce)/m,
+						lookbehind: true
+					}
+				],
+				"url": {
+					pattern: /(^\s*#include\s+)(?:<[^\r\n>]+>|"[^\r\n"]+")/m,
+					lookbehind: true
+				},
+				"string": {
+					pattern: /(["'])(?:\1\1|(?!\1)[^\r\n])*\1/,
+					inside: {
+						"variable": /([%$@])\w+\1/
+					}
+				},
+				"directive": {
+					pattern: /(^\s*)#\w+/m,
+					lookbehind: true,
+					alias: 'keyword'
+				},
+				"function": /\b\w+(?=\()/,
+				// Variables and macros
+				"variable": /[$@]\w+/,
+				"keyword": /\b(?:Case|Const|Continue(?:Case|Loop)|Default|Dim|Do|Else(?:If)?|End(?:Func|If|Select|Switch|With)|Enum|Exit(?:Loop)?|For|Func|Global|If|In|Local|Next|Null|ReDim|Select|Static|Step|Switch|Then|To|Until|Volatile|WEnd|While|With)\b/i,
+				"number": /\b(?:0x[\da-f]+|\d+(?:\.\d+)?(?:e[+-]?\d+)?)\b/i,
+				"boolean": /\b(?:True|False)\b/i,
+				"operator": /<[=>]?|[-+*\/=&>]=?|[?^]|\b(?:And|Or|Not)\b/i,
+				"punctuation": /[\[\]().,:]/
+			};
 		}
-	],
-	"url": {
-		pattern: /(^\s*#include\s+)(?:<[^\r\n>]+>|"[^\r\n"]+")/m,
-		lookbehind: true
-	},
-	"string": {
-		pattern: /(["'])(?:\1\1|(?!\1)[^\r\n])*\1/,
-		inside: {
-			"variable": /([%$@])\w+\1/
-		}
-	},
-	"directive": {
-		pattern: /(^\s*)#\w+/m,
-		lookbehind: true,
-		alias: 'keyword'
-	},
-	"function": /\b\w+(?=\()/,
-	// Variables and macros
-	"variable": /[$@]\w+/,
-	"keyword": /\b(?:Case|Const|Continue(?:Case|Loop)|Default|Dim|Do|Else(?:If)?|End(?:Func|If|Select|Switch|With)|Enum|Exit(?:Loop)?|For|Func|Global|If|In|Local|Next|Null|ReDim|Select|Static|Step|Switch|Then|To|Until|Volatile|WEnd|While|With)\b/i,
-	"number": /\b(?:0x[\da-f]+|\d+(?:\.\d+)?(?:e[+-]?\d+)?)\b/i,
-	"boolean": /\b(?:True|False)\b/i,
-	"operator": /<[=>]?|[-+*\/=&>]=?|[?^]|\b(?:And|Or|Not)\b/i,
-	"punctuation": /[\[\]().,:]/
-};
+	}
+	register(this.Prism);
+
+	if (typeof define === 'function' && define.amd) {
+		// AMD
+		define([], function () {
+			return register;
+		});
+	} else if (typeof module === 'object' && typeof module.exports === 'object') {
+		// CommonJS/Browserify
+		module.exports = register;
+	}
+}).call(undefined);
